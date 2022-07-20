@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Loader func() (c Config, err error)
+
 type Config struct {
 	Environment string
 	Version     string
@@ -21,7 +23,7 @@ func LoadParameters() (c Config, err error) {
 	}
 
 	if err = viper.Unmarshal(&c); err != nil {
-		errors.Wrap(err, "Unable to decode into struct")
+		return c, errors.Wrap(err, "Unable to decode into struct")
 	}
 
 	return c, nil

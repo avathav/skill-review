@@ -1,23 +1,24 @@
 package cmd
 
 import (
-	"skill-review/internal/api"
-
 	"github.com/spf13/cobra"
+	"skill-review/di"
+	"skill-review/internal/api"
 )
 
-var serviceCmd = &cobra.Command{
-	Use:   "start-service",
+var apiCmd = &cobra.Command{
+	Use:   "start-api-service",
 	Short: "cli that starts reports service",
-	Run:   startServices,
+	Run:   startApiService,
 }
 
 func init() {
-	rootCmd.AddCommand(serviceCmd)
+	rootCmd.AddCommand(apiCmd)
 }
 
-func startServices(cmd *cobra.Command, _ []string) {
+func startApiService(cmd *cobra.Command, _ []string) {
 	ctx := cmd.Context()
 
-	api.StartAPIServer(ctx)
+	api.StartAPIServer(ctx, di.BaseParametersLoader())
+
 }

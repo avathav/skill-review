@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package skillreview;
+
+service SkillReview {
+  rpc CheckService (Request) returns (Response);
+}
+
+message Request {
+  string name = 1;
+  string message = 2;
+}
+
+message Response {
+  string env = 1;
+  string timestamp = 2;
+  string version = 3;
+}

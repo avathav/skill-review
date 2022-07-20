@@ -13,12 +13,7 @@ import (
 )
 
 // StartAPIServer TODO move server params to config
-func StartAPIServer(ctx context.Context) {
-	configData, errConfig := config.LoadParameters()
-	if errConfig != nil {
-		log.Panicf("could not load config parameters: %v", errConfig)
-	}
-
+func StartAPIServer(_ context.Context, configLoader config.Loader) {
 	address := fmt.Sprintf(":%v", "40000")
 	r := gin.Default()
 
@@ -26,16 +21,25 @@ func StartAPIServer(ctx context.Context) {
 		c.AbortWithStatus(http.StatusOK)
 	})
 
-	r.POST("/:named_param", handlePostCall(configData))
+	r.POST("/:named_param", handlePostCall(configLoader))
 
 	if runErr := r.Run(address); runErr != nil {
 		log.Panicf("could not start tooling HTTP server: %v", runErr)
 	}
 }
 
-func handlePostCall(c config.Config) func(gc *gin.Context) {
+func handlePostCall(configLoader config.Loader) func(gc *gin.Context) {
 	return func(gc *gin.Context) {
 		np := gc.Param("named_param")
+		c, err := configLoader()
+		if err != nil {
+			gc.JSON(http.StatusInternalServerError, gin.H{
+				"error": "could not get required parameters",
+			})
+
+			return
+		}
+
 		gc.JSON(http.StatusOK, gin.H{
 			"param":     np,
 			"timestamp": time.Now(),
