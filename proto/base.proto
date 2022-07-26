@@ -3,7 +3,7 @@ syntax = "proto3";
 package skillreview;
 
 service SkillReview {
-  rpc CheckService (Request) returns (Response);
+  rpc ProcessMessage (Request) returns (Response);
 }
 
 message Request {
@@ -15,4 +15,6 @@ message Response {
   string env = 1;
   string timestamp = 2;
   string version = 3;
+  string message = 4;
+  string echo = 5;
 }

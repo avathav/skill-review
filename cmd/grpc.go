@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"skill-review/di"
 	"skill-review/internal/grpc"
 
@@ -18,5 +20,7 @@ func init() {
 }
 
 func startGrpcServices(_ *cobra.Command, _ []string) {
-	grpc.NewGrpcService(di.BaseParametersLoader())
+	if err := grpc.NewGrpcService(di.MainFeatureProcessor(di.BaseParametersLoader())); err != nil {
+		log.Fatalf("could not run grpc server: %s", err.Error())
+	}
 }

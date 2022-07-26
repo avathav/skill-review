@@ -1,9 +1,12 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"log"
+
 	"skill-review/di"
 	"skill-review/internal/api"
+
+	"github.com/spf13/cobra"
 )
 
 var apiCmd = &cobra.Command{
@@ -16,9 +19,9 @@ func init() {
 	rootCmd.AddCommand(apiCmd)
 }
 
-func startApiService(cmd *cobra.Command, _ []string) {
-	ctx := cmd.Context()
-
-	api.StartAPIServer(ctx, di.BaseParametersLoader())
+func startApiService(_ *cobra.Command, _ []string) {
+	if err := api.StartAPIServer(di.ApiPostRoutes(di.BaseParametersLoader())); err != nil {
+		log.Fatalf("could not start tooling HTTP server: %v", err)
+	}
 
 }
