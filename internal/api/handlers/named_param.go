@@ -12,6 +12,14 @@ type NamedParam struct {
 	processor *mainfeature.Processor
 }
 
+//
+// @Summary Reads param send by user and provides server response
+// @Description reads named param send in address
+// @Accept  json
+// @Param message path string true "message"
+// @Produce  json
+// @Success 200 {object} DefaultResponse "ok"
+// @Router /named_param/{message} [POST]
 func (h NamedParam) Handler(gc *gin.Context) {
 	defaultRequest := DefaultRequest{Message: gc.Param("message")}
 

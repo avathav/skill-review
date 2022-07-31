@@ -19,6 +19,10 @@ func init() {
 	rootCmd.AddCommand(apiCmd)
 }
 
+// @title SkillReviewApp
+// @version 1.0
+// @description Rest and Grpc endpoints.
+// @BasePath /
 func startApiService(_ *cobra.Command, _ []string) {
 	if err := api.StartAPIServer(di.ApiPostRoutes(di.BaseParametersLoader())); err != nil {
 		log.Fatalf("could not start tooling HTTP server: %v", err)

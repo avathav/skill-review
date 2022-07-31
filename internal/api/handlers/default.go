@@ -37,6 +37,14 @@ type Default struct {
 	processor *mainfeature.Processor
 }
 
+//
+// @Summary Provides default json message processing
+// @Description reads JSON message
+// @Accept  json
+// @Param request body DefaultRequest true "request message"
+// @Produce  json
+// @Success 200 {object} DefaultResponse "ok"
+// @Router /message [post]
 func (d Default) Handler(gc *gin.Context) {
 	body, readErr := ioutil.ReadAll(gc.Request.Body)
 	if readErr != nil {

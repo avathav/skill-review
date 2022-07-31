@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 const (
@@ -19,7 +21,10 @@ type Route struct {
 	Handler gin.HandlerFunc
 }
 
-// StartAPIServer TODO move server params to config
+// @title SkillReviewApp
+// @version 1.0
+// @description Rest and Grpc endpoints.
+// @BasePath /
 func StartAPIServer(routes []Route) error {
 	address := fmt.Sprintf(":%v", Port)
 	r := gin.Default()
@@ -28,6 +33,12 @@ func StartAPIServer(routes []Route) error {
 		c.AbortWithStatus(http.StatusOK)
 	})
 
+	registerRoutes(r, routes)
+
+	return r.Run(address)
+}
+
+func registerRoutes(r *gin.Engine, routes []Route) {
 	for _, route := range routes {
 		switch route.Method {
 		case "GET":
@@ -37,5 +48,5 @@ func StartAPIServer(routes []Route) error {
 		}
 	}
 
-	return r.Run(address)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
