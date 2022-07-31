@@ -2,37 +2,38 @@ package grpc
 
 import (
 	"fmt"
-	"log"
 	"net"
 
-	"skill-review/internal/config"
-	"skill-review/internal/grpc/services"
-	"skill-review/proto"
+	"skill-review/internal/mainfeature"
+	proto "skill-review/proto"
 
+	"github.com/pkg/errors"
 	basegrpc "google.golang.org/grpc"
 )
 
-func NewGrpcService(c config.Loader) {
-	listener, err := NewNetworkListener("tcp", "localhost:30000")
+const (
+	ServerAddress = "localhost:40000"
+)
+
+func NewGrpcService(p *mainfeature.Processor) error {
+	listener, err := NewNetworkListener("tcp", ServerAddress)
 	if err != nil {
-		fmt.Println("service: could not start listener:", err)
+		return errors.Wrap(err, "service: could not start listener")
 	}
 
 	server := basegrpc.NewServer()
-	checkService := services.NewCheckServiceHandler(c)
-	proto.RegisterSkillReviewServer(server, *checkService)
+	proto.RegisterSkillReviewServer(server, NewSkillReviewServer(p))
 
-	err = server.Serve(listener)
-	if err != nil {
-		log.Fatal("could not serve api")
+	if err = server.Serve(listener); err != nil {
+		return errors.Wrap(err, "could not serve api")
 	}
+
+	return nil
 }
 
 func NewNetworkListener(network, address string) (net.Listener, error) {
 	listener, err := net.Listen(network, address)
 	if err != nil {
-		log.Panic(err)
-
 		return nil, fmt.Errorf("grpc: problem with setting up network listener: %s", err)
 	}
 
